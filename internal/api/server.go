@@ -2,7 +2,7 @@ package api
 
 import (
 	"fmt"
-	"go-kafka-project/configs"
+	"go-microservice-project/configs"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -1,4 +1,4 @@
-module go-kafka-project
+module go-microservice-project
 
 go 1.25.3
 

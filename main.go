@@ -1,8 +1,8 @@
 package main
 
 import (
-	"go-kafka-project/configs"
-	"go-kafka-project/internal/api"
+	"go-microservice-project/configs"
+	"go-microservice-project/internal/api"
 	"log"
 )
 
