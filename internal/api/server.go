@@ -3,8 +3,8 @@ package api
 import (
 	"fmt"
 	"go-microservice-project/configs"
-	"log"
-	"net/http"
+	"go-microservice-project/internal/api/rest"
+	"go-microservice-project/internal/api/rest/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,14 +15,16 @@ func StartServer(config configs.AppConfig) {
 
 	app := fiber.New()
 
-	app.Get("/health", Healthcheck)
+	rh := &rest.RestHandler{
+		App: app,
+	}
+
+	setupRoutes(rh)
 
 	app.Listen(addr)
 }
 
-func Healthcheck(ctx *fiber.Ctx) error {
-	log.Println("Calling Healthcheck request")
-	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "I'm breathing Bastards!",
-	})
+func setupRoutes(rh *rest.RestHandler) {
+	// user handler
+	handlers.SetupUserHandler(rh)
 }
