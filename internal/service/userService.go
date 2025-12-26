@@ -1,12 +1,19 @@
 package service
 
-import "go-microservice-project/internal/domain"
+import (
+	"go-microservice-project/internal/domain"
+	"go-microservice-project/internal/dto"
+	"log"
+)
 
 type UserService struct {
 }
 
-func (s *UserService) Register(input any) (string, error) {
-	return "", nil
+func (s *UserService) Register(input dto.RegisterUser) (string, error) {
+
+	log.Println("Registering user", input)
+
+	return "my-token", nil
 }
 
 func (s *UserService) Login(input any) (string, error) {
@@ -41,6 +48,10 @@ func (s *UserService) BecomeSeller(id uint, input any) (string, error) {
 	return "", nil
 }
 
+func (s *UserService) FindCart(id uint) ([]interface{}, error) {
+	return nil, nil
+}
+
 func (s *UserService) CreateCart(input any, u domain.User) ([]interface{}, error) {
 	return nil, nil
 }
@@ -53,6 +64,6 @@ func (s *UserService) GetOrders(u domain.User) ([]interface{}, error) {
 	return nil, nil
 }
 
-func (s *UserService) GetOrderById(id, uId uint) ([]interface{}, error) {
+func (s *UserService) GetOrderById(id, uId uint) (interface{}, error) {
 	return nil, nil
 }

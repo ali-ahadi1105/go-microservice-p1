@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"go-microservice-project/internal/api/rest"
+	"go-microservice-project/internal/dto"
+	"go-microservice-project/internal/service"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,6 +11,7 @@ import (
 
 type UserHandler struct {
 	// user service
+	userService service.UserService
 }
 
 func SetupUserHandler(rh *rest.RestHandler) {
@@ -16,7 +19,10 @@ func SetupUserHandler(rh *rest.RestHandler) {
 	app := rh.App
 
 	// TODO: create an instance of user service and inject to users handler
-	userHandler := UserHandler{}
+	usv := service.UserService{}
+	userHandler := UserHandler{
+		userService: usv,
+	}
 
 	// Create users group with /users prefix
 	users := app.Group("/users")
@@ -40,12 +46,57 @@ func SetupUserHandler(rh *rest.RestHandler) {
 }
 
 func (uh *UserHandler) Register(ctx *fiber.Ctx) error {
+
+	user := dto.RegisterUser{}
+
+	err := ctx.BodyParser(&user)
+
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Please provide valid data to register",
+		})
+	}
+
+	// Validate the user data
+	if err := user.Validate(); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	token, err := uh.userService.Register(user)
+
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"message": "Error in registering user",
+		})
+	}
+
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
-		"message": "User registered successfully",
+		"message": token,
 	})
 }
 
 func (uh *UserHandler) Login(ctx *fiber.Ctx) error {
+
+	user := dto.UserLogin{}
+
+	err := ctx.BodyParser(&user)
+
+	if err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Please provide valid login data",
+		})
+	}
+
+	// Validate the user login data
+	if err := user.Validate(); err != nil {
+		return ctx.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	// TODO: Implement actual login logic
 	return ctx.Status(http.StatusOK).JSON(&fiber.Map{
 		"message": "User logined successfully",
 	})
